@@ -1,6 +1,6 @@
 # Case Study #1 - Danny's Diner
 
-### Question and Solution
+## Question and Solution
 
 1. What is the total amount each customer spent at the restaurant?
 
@@ -179,4 +179,59 @@ JOIN members
 WHERE order_date >= join_date AND order_date <= '2021-01-31'
 GROUP BY sales.customer_id
 ORDER BY sales.customer_id;
+```
+
+## Bonus Questions
+
+Join All The Things
+
+Recreate table with customer_id, order_date, product_name, price, member (Y or N)
+
+```sql
+SELECT
+	sales.customer_id,
+    order_date,
+	product_name,
+    price,
+    CASE
+		WHEN join_date <= order_date THEN 'Y'
+        ELSE 'N'
+	END AS member
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+LEFT JOIN members
+	ON members.customer_id = sales.customer_id
+ORDER BY customer_id, order_date, price DESC;
+```
+
+Rank All The Things
+
+Danny also requires further information about the ranking of customer products, but he purposely does not need the ranking for non-member purchases so he expects null ranking values for the records when customers are not yet part of the loyalty program.
+
+```sql
+CREATE VIEW view_customerdata AS
+SELECT
+	sales.customer_id,
+    order_date,
+	product_name,
+    price,
+    CASE
+		WHEN join_date <= order_date THEN 'Y'
+        ELSE 'N'
+	END AS member
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+LEFT JOIN members
+	ON members.customer_id = sales.customer_id
+ORDER BY customer_id, order_date, price DESC;
+
+SELECT
+	*,
+    CASE
+		WHEN member = 'Y' THEN RANK() OVER(PARTITION BY customer_id, member ORDER BY order_date)
+        ELSE 'null'
+	END AS ranking
+FROM view_customerdata;
 ```
