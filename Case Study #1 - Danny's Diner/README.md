@@ -12,53 +12,53 @@ CREATE DATABASE 8WeekSQLChallenge_case_study_1;
 USE 8WeekSQLChallenge_case_study_1;
 
 CREATE TABLE sales (
-	customer_id VARCHAR(1),
-	order_date DATE,
-	product_id INT
+  customer_id VARCHAR(1),
+  order_date DATE,
+  product_id INT
 );
 
 INSERT INTO sales
-	(customer_id, order_date, product_id)
+  (customer_id, order_date, product_id)
 VALUES
-	('A', '2021-01-01', '1'),
-	('A', '2021-01-01', '2'),
-	('A', '2021-01-07', '2'),
-	('A', '2021-01-10', '3'),
-	('A', '2021-01-11', '3'),
-	('A', '2021-01-11', '3'),
-	('B', '2021-01-01', '2'),
-	('B', '2021-01-02', '2'),
-	('B', '2021-01-04', '1'),
-	('B', '2021-01-11', '1'),
-	('B', '2021-01-16', '3'),
-	('B', '2021-02-01', '3'),
-	('C', '2021-01-01', '3'),
-	('C', '2021-01-01', '3'),
-	('C', '2021-01-07', '3');
+  ('A', '2021-01-01', '1'),
+  ('A', '2021-01-01', '2'),
+  ('A', '2021-01-07', '2'),
+  ('A', '2021-01-10', '3'),
+  ('A', '2021-01-11', '3'),
+  ('A', '2021-01-11', '3'),
+  ('B', '2021-01-01', '2'),
+  ('B', '2021-01-02', '2'),
+  ('B', '2021-01-04', '1'),
+  ('B', '2021-01-11', '1'),
+  ('B', '2021-01-16', '3'),
+  ('B', '2021-02-01', '3'),
+  ('C', '2021-01-01', '3'),
+  ('C', '2021-01-01', '3'),
+  ('C', '2021-01-07', '3');
 
 CREATE TABLE menu (
-	product_id INT,
-	product_name VARCHAR(5),
-	price int
+  product_id INT,
+  product_name VARCHAR(5),
+  price int
 );
 
 INSERT INTO menu
-	(product_id, product_name, price)
+  (product_id, product_name, price)
 VALUES
-	('1', 'sushi', '10'),
-	('2', 'curry', '15'),
-	('3', 'ramen', '12');
+  ('1', 'sushi', '10'),
+  ('2', 'curry', '15'),
+  ('3', 'ramen', '12');
     
 CREATE TABLE members (
-	customer_id VARCHAR(1),
-	join_date date
+  customer_id VARCHAR(1),
+  join_date date
 );
 
 INSERT INTO members
-	(customer_id, join_date)
+  (customer_id, join_date)
 VALUES
-	('A', '2021-01-07'),
-	('B', '2021-01-09');
+  ('A', '2021-01-07'),
+  ('B', '2021-01-09');
 ```
 
 ## Case Study Questions and My Solutions
@@ -67,11 +67,11 @@ VALUES
 
 ```sql
 SELECT
-	customer_id,
-	SUM(price) AS total_amt
+  customer_id,
+  SUM(price) AS total_amt
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 GROUP BY customer_id;
 ```
 
@@ -87,8 +87,8 @@ GROUP BY customer_id;
 
 ```sql
 SELECT
-	customer_id,
-	COUNT(DISTINCT order_date) AS days_visited
+  customer_id,
+  COUNT(DISTINCT order_date) AS days_visited
 FROM sales
 GROUP BY customer_id;
 ```
@@ -106,16 +106,16 @@ GROUP BY customer_id;
 ```sql
 CREATE VIEW view_firstitem AS
 SELECT
-	customer_id,
-	order_date,
-	FIRST_VALUE(product_name) OVER(PARTITION BY customer_id ORDER BY order_date ASC) AS first_item
+  customer_id,
+  order_date,
+  FIRST_VALUE(product_name) OVER(PARTITION BY customer_id ORDER BY order_date ASC) AS first_item
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id;
+  ON menu.product_id = sales.product_id;
 
 SELECT
-	customer_id,
-	first_item
+  customer_id,
+  first_item
 FROM view_firstitem
 GROUP BY customer_id, first_item;
 ```
@@ -132,15 +132,16 @@ GROUP BY customer_id, first_item;
 
 ```sql
 SELECT
-    product_name,
-    COUNT(product_name) AS times_purchased
+  product_name,
+  COUNT(product_name) AS times_purchased
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 GROUP BY product_name
 ORDER BY 2 DESC
 LIMIT 1;
 ```
+
 #### Result:
 
 | product_name | times_purchased |
@@ -152,19 +153,19 @@ LIMIT 1;
 ```sql
 CREATE VIEW view_timespurchased AS
 SELECT
-	customer_id,
-    product_name,
-    COUNT(product_name) AS times_purchased,
-    RANK() OVER(PARTITION BY customer_id ORDER BY COUNT(customer_id) DESC) AS ranking
+  customer_id,
+  product_name,
+  COUNT(product_name) AS times_purchased,
+  RANK() OVER(PARTITION BY customer_id ORDER BY COUNT(customer_id) DESC) AS ranking
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 GROUP BY customer_id, product_name;
 
 SELECT
-	customer_id,
-    product_name,
-    times_purchased
+  customer_id,
+  product_name,
+  times_purchased
 FROM view_timespurchased
 WHERE ranking = 1;
 ```
@@ -184,22 +185,22 @@ WHERE ranking = 1;
 ```sql
 CREATE VIEW view_memberfirstitem AS
 SELECT
-	sales.customer_id,
-    order_date,
-    product_name,
-    join_date,
-    ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date) AS row_numbr
+  sales.customer_id,
+  order_date,
+  product_name,
+  join_date,
+  ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date) AS row_numbr
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 LEFT JOIN members
-	ON members.customer_id = sales.customer_id
+  ON members.customer_id = sales.customer_id
 WHERE order_date > join_date
 ORDER BY customer_id, order_date;
 
 SELECT
-	customer_id,
-	product_name
+  customer_id,
+  product_name
 FROM view_memberfirstitem
 WHERE row_numbr = 1;
 ```
@@ -216,22 +217,22 @@ WHERE row_numbr = 1;
 ```sql
 CREATE VIEW view_before_member_last_item AS
 SELECT
-	sales.customer_id,
-    order_date,
-    product_name,
-    join_date,
-    ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date DESC) AS row_numbr
+  sales.customer_id,
+  order_date,
+  product_name,
+  join_date,
+  ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date DESC) AS row_numbr
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 LEFT JOIN members
-	ON members.customer_id = sales.customer_id
+  ON members.customer_id = sales.customer_id
 WHERE order_date < join_date
 ORDER BY customer_id, order_date DESC;
 
 SELECT
-	customer_id,
-    product_name
+  customer_id,
+  product_name
 FROM view_before_member_last_item
 WHERE row_numbr = 1;
 ```
@@ -247,14 +248,14 @@ WHERE row_numbr = 1;
 
 ```sql
 SELECT
-	sales.customer_id,
-    COUNT(sales.product_id) AS total_items,
-    SUM(price) AS total_spent
+  sales.customer_id,
+  COUNT(sales.product_id) AS total_items,
+  SUM(price) AS total_spent
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 JOIN members
-	ON members.customer_id = sales.customer_id
+  ON members.customer_id = sales.customer_id
 WHERE join_date > order_date
 GROUP BY sales.customer_id
 ORDER BY sales.customer_id;
@@ -271,14 +272,14 @@ ORDER BY sales.customer_id;
 
 ```sql
 SELECT
-	customer_id,
-    SUM(CASE
-		WHEN product_name = 'sushi' THEN price * 10 * 2
-        ELSE price * 10
+  customer_id,
+  SUM(CASE
+    WHEN product_name = 'sushi' THEN price * 10 * 2
+    ELSE price * 10
 	END) AS total_points
 FROM menu
 JOIN sales
-	ON sales.product_id = menu.product_id
+  ON sales.product_id = menu.product_id
 GROUP BY customer_id;
 ```
 
@@ -294,17 +295,17 @@ GROUP BY customer_id;
 
 ```sql
 SELECT
-	sales.customer_id,
-    SUM(CASE
-		WHEN order_date BETWEEN join_date AND join_date + INTERVAL 6 DAY THEN price * 10 * 2
-        WHEN product_name = 'sushi' THEN price * 10 * 2
-        ELSE price * 10
-	END) AS total_points
+  sales.customer_id,
+  SUM(CASE
+    WHEN order_date BETWEEN join_date AND join_date + INTERVAL 6 DAY THEN price * 10 * 2
+    WHEN product_name = 'sushi' THEN price * 10 * 2
+    ELSE price * 10
+  END) AS total_points
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 JOIN members
-	ON members.customer_id = sales.customer_id
+  ON members.customer_id = sales.customer_id
 WHERE order_date >= join_date AND order_date <= '2021-01-31'
 GROUP BY sales.customer_id
 ORDER BY sales.customer_id;
@@ -325,19 +326,19 @@ ORDER BY sales.customer_id;
 
 ```sql
 SELECT
-	sales.customer_id,
-    order_date,
-	product_name,
-    price,
-    CASE
-		WHEN join_date <= order_date THEN 'Y'
-        ELSE 'N'
-	END AS member
+  sales.customer_id,
+  order_date,
+  product_name,
+  price,
+  CASE
+    WHEN join_date <= order_date THEN 'Y'
+    ELSE 'N'
+  END AS member
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 LEFT JOIN members
-	ON members.customer_id = sales.customer_id
+  ON members.customer_id = sales.customer_id
 ORDER BY customer_id, order_date, price DESC;
 ```
 
@@ -368,27 +369,27 @@ Danny also requires further information about the ranking of customer products, 
 ```sql
 CREATE VIEW view_customerdata AS
 SELECT
-	sales.customer_id,
-    order_date,
-	product_name,
-    price,
-    CASE
-		WHEN join_date <= order_date THEN 'Y'
-        ELSE 'N'
-	END AS member
+  sales.customer_id,
+  order_date,
+  product_name,
+  price,
+  CASE
+    WHEN join_date <= order_date THEN 'Y'
+    ELSE 'N'
+  END AS member
 FROM sales
 JOIN menu
-	ON menu.product_id = sales.product_id
+  ON menu.product_id = sales.product_id
 LEFT JOIN members
-	ON members.customer_id = sales.customer_id
+  ON members.customer_id = sales.customer_id
 ORDER BY customer_id, order_date, price DESC;
 
 SELECT
-	*,
-    CASE
-		WHEN member = 'Y' THEN RANK() OVER(PARTITION BY customer_id, member ORDER BY order_date)
-        ELSE 'null'
-	END AS ranking
+  *,
+  CASE
+    WHEN member = 'Y' THEN RANK() OVER(PARTITION BY customer_id, member ORDER BY order_date)
+    ELSE 'null'
+  END AS ranking
 FROM view_customerdata;
 ```
 
