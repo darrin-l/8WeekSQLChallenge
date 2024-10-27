@@ -13,8 +13,8 @@ USE 8WeekSQLChallenge_case_study_1;
 
 CREATE TABLE sales (
 	customer_id VARCHAR(1),
-    order_date DATE,
-    product_id INT
+	order_date DATE,
+	product_id INT
 );
 
 INSERT INTO sales
@@ -38,8 +38,8 @@ VALUES
 
 CREATE TABLE menu (
 	product_id INT,
-    product_name VARCHAR(5),
-    price int
+	product_name VARCHAR(5),
+	price int
 );
 
 INSERT INTO menu
@@ -51,7 +51,7 @@ VALUES
     
 CREATE TABLE members (
 	customer_id VARCHAR(1),
-    join_date date
+	join_date date
 );
 
 INSERT INTO members
@@ -63,19 +63,19 @@ VALUES
 
 ## Case Study Questions and My Solutions
 
-1. What is the total amount each customer spent at the restaurant?
+#### 1. What is the total amount each customer spent at the restaurant?
 
 ```sql
 SELECT
 	customer_id,
-    SUM(price) AS total_amt
+	SUM(price) AS total_amt
 FROM sales
 JOIN menu
 	ON menu.product_id = sales.product_id
 GROUP BY customer_id;
 ```
 
-Result:
+#### Result:
 
 | customer_id | total_amt |
 | --- | ---|
@@ -83,17 +83,17 @@ Result:
 | B | 74 |
 | C | 36 |
 
-2. How many days has each customer visited the restaurant?
+#### 2. How many days has each customer visited the restaurant?
 
 ```sql
 SELECT
 	customer_id,
-    COUNT(DISTINCT order_date) AS days_visited
+	COUNT(DISTINCT order_date) AS days_visited
 FROM sales
 GROUP BY customer_id;
 ```
 
-Result:
+### Result:
 
 | customer_id | days_visited |
 | ---| ---|
@@ -101,26 +101,26 @@ Result:
 | B | 6 |
 | C | 2 |
 
-3. What was the first item from the menu purchased by each customer?
+#### 3. What was the first item from the menu purchased by each customer?
 
 ```sql
 CREATE VIEW view_firstitem AS
 SELECT
 	customer_id,
-    order_date,
-    FIRST_VALUE(product_name) OVER(PARTITION BY customer_id ORDER BY order_date ASC) AS first_item
+	order_date,
+	FIRST_VALUE(product_name) OVER(PARTITION BY customer_id ORDER BY order_date ASC) AS first_item
 FROM sales
 JOIN menu
 	ON menu.product_id = sales.product_id;
-    
+
 SELECT
 	customer_id,
-    first_item
+	first_item
 FROM view_firstitem
 GROUP BY customer_id, first_item;
 ```
 
-Result:
+#### Result:
 
 | customer_id | first_item |
 | ---| ---|
@@ -128,7 +128,7 @@ Result:
 | B | curry |
 | C | ramen |
 
-4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+#### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 
 ```sql
 SELECT
@@ -141,13 +141,13 @@ GROUP BY product_name
 ORDER BY 2 DESC
 LIMIT 1;
 ```
-Result:
+#### Result:
 
 | product_name | times_purchased |
 | ---| ---|
 | ramen | 8 |
 
-5. Which item was the most popular for each customer?
+#### 5. Which item was the most popular for each customer?
 
 ```sql
 CREATE VIEW view_timespurchased AS
@@ -169,7 +169,7 @@ FROM view_timespurchased
 WHERE ranking = 1;
 ```
 
-Result:
+#### Result:
 
 | customer_id | product_name | times_purchased |
 | ---| ---| --- |
@@ -179,7 +179,7 @@ Result:
 | B | ramen | 2 |
 | C | ramen | 3 |
 
-6. Which item was purchased first by the customer after they became a member?
+#### 6. Which item was purchased first by the customer after they became a member?
 
 ```sql
 CREATE VIEW view_memberfirstitem AS
@@ -204,14 +204,14 @@ FROM view_memberfirstitem
 WHERE row_numbr = 1;
 ```
 
-Result:
+#### Result:
 
 | customer_id | product_name |
 | ---| ---|
 | A | ramen |
 | B | sushi |
 
-7. Which item was purchased just before the customer became a member?
+#### 7. Which item was purchased just before the customer became a member?
 
 ```sql
 CREATE VIEW view_before_member_last_item AS
@@ -236,14 +236,14 @@ FROM view_before_member_last_item
 WHERE row_numbr = 1;
 ```
 
-Result:
+#### Result:
 
 | customer_id | product_name |
 | ---| ---|
 | A | sushi |
 | B | sushi |
 
-8. What is the total items and amount spent for each member before they became a member?
+#### 8. What is the total items and amount spent for each member before they became a member?
 
 ```sql
 SELECT
@@ -260,14 +260,14 @@ GROUP BY sales.customer_id
 ORDER BY sales.customer_id;
 ```
 
-Result:
+#### Result:
 
 | customer_id | total_items | total_spent |
 | --- | --- | --- |
 | A | 2 | 25 |
 | B | 3 | 40 |
 
-9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+#### 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 
 ```sql
 SELECT
@@ -282,7 +282,7 @@ JOIN sales
 GROUP BY customer_id;
 ```
 
-Result:
+#### Result:
 
 | customer_id | total_points |
 | --- | --- |
@@ -290,7 +290,7 @@ Result:
 | B | 940 |
 | C | 360 |
 
-10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+#### 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 
 ```sql
 SELECT
@@ -310,7 +310,7 @@ GROUP BY sales.customer_id
 ORDER BY sales.customer_id;
 ```
 
-Result:
+#### Result:
 
 | customer_id | total_points |
 | --- | --- |
@@ -319,9 +319,9 @@ Result:
 
 ## Bonus Questions
 
-Join All The Things
+#### Join All The Things
 
-Recreate table with customer_id, order_date, product_name, price, member (Y or N)
+#### Recreate table with customer_id, order_date, product_name, price, member (Y or N)
 
 ```sql
 SELECT
@@ -341,7 +341,7 @@ LEFT JOIN members
 ORDER BY customer_id, order_date, price DESC;
 ```
 
-Result:
+#### Result:
 
 | customer_id | order_date | product_name | price | member |
 | --- | --- | --- | --- | --- |
@@ -361,7 +361,7 @@ Result:
 | C	| 2021-01-01	| ramen	| 12	| N |
 | C	| 2021-01-07	| ramen	| 12	| N |
 
-Rank All The Things
+#### Rank All The Things
 
 Danny also requires further information about the ranking of customer products, but he purposely does not need the ranking for non-member purchases so he expects null ranking values for the records when customers are not yet part of the loyalty program.
 
@@ -392,7 +392,7 @@ SELECT
 FROM view_customerdata;
 ```
 
-Result:
+#### Result:
 
 | customer_id | order_date | product_name | price | member | ranking |
 | --- | --- | --- | --- | --- | --- |
