@@ -83,6 +83,8 @@ GROUP BY customer_id;
 | B | 74 |
 | C | 36 |
 
+***
+
 #### 2. How many days has each customer visited the restaurant?
 
 ```sql
@@ -93,13 +95,15 @@ FROM sales
 GROUP BY customer_id;
 ```
 
-### Result:
+#### Result:
 
 | customer_id | days_visited |
 | ---| ---|
 | A | 4 |
 | B | 6 |
 | C | 2 |
+
+***
 
 #### 3. What was the first item from the menu purchased by each customer?
 
@@ -128,6 +132,8 @@ GROUP BY customer_id, first_item;
 | B | curry |
 | C | ramen |
 
+***
+
 #### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 
 ```sql
@@ -147,6 +153,8 @@ LIMIT 1;
 | product_name | times_purchased |
 | ---| ---|
 | ramen | 8 |
+
+***
 
 #### 5. Which item was the most popular for each customer?
 
@@ -180,6 +188,8 @@ WHERE ranking = 1;
 | B | ramen | 2 |
 | C | ramen | 3 |
 
+***
+
 #### 6. Which item was purchased first by the customer after they became a member?
 
 ```sql
@@ -211,6 +221,8 @@ WHERE row_numbr = 1;
 | ---| ---|
 | A | ramen |
 | B | sushi |
+
+***
 
 #### 7. Which item was purchased just before the customer became a member?
 
@@ -244,6 +256,8 @@ WHERE row_numbr = 1;
 | A | sushi |
 | B | sushi |
 
+***
+
 #### 8. What is the total items and amount spent for each member before they became a member?
 
 ```sql
@@ -268,6 +282,8 @@ ORDER BY sales.customer_id;
 | A | 2 | 25 |
 | B | 3 | 40 |
 
+***
+
 #### 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 
 ```sql
@@ -276,7 +292,7 @@ SELECT
   SUM(CASE
     WHEN product_name = 'sushi' THEN price * 10 * 2
     ELSE price * 10
-	END) AS total_points
+  END) AS total_points
 FROM menu
 JOIN sales
   ON sales.product_id = menu.product_id
@@ -290,6 +306,8 @@ GROUP BY customer_id;
 | A | 860 |
 | B | 940 |
 | C | 360 |
+
+***
 
 #### 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 
@@ -318,11 +336,13 @@ ORDER BY sales.customer_id;
 | A | 1020 |
 | B | 320 |
 
+***
+
 ## Bonus Questions
 
 #### Join All The Things
 
-#### Recreate table with customer_id, order_date, product_name, price, member (Y or N)
+Recreate table with customer_id, order_date, product_name, price, member (Y or N)
 
 ```sql
 SELECT
@@ -361,6 +381,8 @@ ORDER BY customer_id, order_date, price DESC;
 | C	| 2021-01-01	| ramen	| 12	| N |
 | C	| 2021-01-01	| ramen	| 12	| N |
 | C	| 2021-01-07	| ramen	| 12	| N |
+
+***
 
 #### Rank All The Things
 
@@ -412,3 +434,5 @@ FROM view_customerdata;
 | C	| 2021-01-01	| ramen	| 12	| N	| null |
 | C	| 2021-01-01	| ramen	| 12	| N	| null |
 | C	| 2021-01-07	| ramen	| 12	| N	| null |
+
+***
