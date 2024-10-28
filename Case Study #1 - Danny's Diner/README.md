@@ -83,6 +83,8 @@ GROUP BY customer_id;
 | B | 74 |
 | C | 36 |
 
+![{54F249D3-0ABF-4572-872D-887D16E7EF0B}](https://github.com/user-attachments/assets/d9ae1d91-a91f-4f7c-affe-d2d00def1465)
+
 ***
 
 #### 2. How many days has each customer visited the restaurant?
@@ -102,6 +104,8 @@ GROUP BY customer_id;
 | A | 4 |
 | B | 6 |
 | C | 2 |
+
+![{0700F1F7-8DDC-499E-B5FF-402343586F8F}](https://github.com/user-attachments/assets/4bb776b7-257d-4cc2-b2cf-36a4be27f825)
 
 ***
 
@@ -132,6 +136,8 @@ GROUP BY customer_id, first_item;
 | B | curry |
 | C | ramen |
 
+![{F72A750D-9916-4475-88E7-D13F43FA286F}](https://github.com/user-attachments/assets/82de26ad-f426-49c5-89ba-6414e46ce979)
+
 ***
 
 #### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
@@ -153,6 +159,8 @@ LIMIT 1;
 | product_name | times_purchased |
 | ---| ---|
 | ramen | 8 |
+
+![{16278C1C-994B-4C67-A797-021BDD4BEDBB}](https://github.com/user-attachments/assets/13d0a91b-0708-44af-9391-6bbe4cfe35a4)
 
 ***
 
@@ -188,6 +196,8 @@ WHERE ranking = 1;
 | B | ramen | 2 |
 | C | ramen | 3 |
 
+![{D635A8F5-C855-42B1-87EF-F42D4A4033C2}](https://github.com/user-attachments/assets/c3fad67d-5920-444b-937d-9aff3352f0ad)
+
 ***
 
 #### 6. Which item was purchased first by the customer after they became a member?
@@ -221,6 +231,8 @@ WHERE row_numbr = 1;
 | ---| ---|
 | A | ramen |
 | B | sushi |
+
+![{327877DD-3189-4E5D-BA07-905AD3671B6F}](https://github.com/user-attachments/assets/74276118-b5a4-4b90-9746-ed80f1f44801)
 
 ***
 
@@ -256,6 +268,8 @@ WHERE row_numbr = 1;
 | A | sushi |
 | B | sushi |
 
+![{7B7533D3-5207-434F-A76F-2D53DB7D2767}](https://github.com/user-attachments/assets/f9432a7e-cbe4-492c-adc2-a9fa035f3b71)
+
 ***
 
 #### 8. What is the total items and amount spent for each member before they became a member?
@@ -282,6 +296,8 @@ ORDER BY sales.customer_id;
 | A | 2 | 25 |
 | B | 3 | 40 |
 
+![{49BEC91A-0E24-4BD6-98BF-98AAB67A168D}](https://github.com/user-attachments/assets/d45e5938-033e-46dc-ad6f-c999c8503164)
+
 ***
 
 #### 9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
@@ -306,6 +322,8 @@ GROUP BY customer_id;
 | A | 860 |
 | B | 940 |
 | C | 360 |
+
+![{FD71A471-085E-4F9B-8134-3F064B8F60BB}](https://github.com/user-attachments/assets/259f6d2a-1cf4-45c5-9135-93793e51eaf8)
 
 ***
 
@@ -335,6 +353,8 @@ ORDER BY sales.customer_id;
 | --- | --- |
 | A | 1020 |
 | B | 320 |
+
+![{59F1162D-3E47-46C9-A15E-3B6DB1887EE4}](https://github.com/user-attachments/assets/6b33d6d2-daed-468d-b60c-5f42c3371e55)
 
 ***
 
