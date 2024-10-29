@@ -7,9 +7,9 @@ Link to this case study can be found here: https://8weeksqlchallenge.com/case-st
 I decided to work in MySQL instead of the embedded DB Fiddle so I created a database and loaded the tables as below.
 
 ```sql
-CREATE DATABASE 8WeekSQLChallenge_case_study_1;
+CREATE DATABASE cs1_dannys_diner;
 
-USE 8WeekSQLChallenge_case_study_1;
+USE cs1_dannys_diner;
 
 CREATE TABLE sales (
   customer_id VARCHAR(1),
@@ -138,6 +138,33 @@ GROUP BY customer_id, first_item;
 
 ![{F72A750D-9916-4475-88E7-D13F43FA286F}](https://github.com/user-attachments/assets/82de26ad-f426-49c5-89ba-6414e46ce979)
 
+#### Alternate result:
+- using CTE (common table expression)
+- Assumption: there is no time stamp therefore customer A has two first items
+- Utilize DENSE_RANK() for above assumption
+
+```sql
+WITH ordered_items_cte AS (
+  SELECT
+    customer_id,
+    order_date,
+    product_name,
+    DENSE_RANK() OVER(PARTITION BY customer_id ORDER BY order_date) AS ranking
+  FROM sales
+  JOIN menu
+    ON menu.product_id = sales.product_id
+)
+
+SELECT
+  customer_id,
+  product_name
+FROM ordered_items_cte
+WHERE ranking = 1
+GROUP BY customer_id, product_name;
+```
+
+![{C8145C69-AA48-44FD-9579-6ACBE395C700}](https://github.com/user-attachments/assets/7bf6e603-e403-4f86-a191-fcba039a40f3)
+
 ***
 
 #### 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
@@ -165,6 +192,8 @@ LIMIT 1;
 ***
 
 #### 5. Which item was the most popular for each customer?
+- Assumption: customer can have more than one popular item if they purchased the same number of each item
+- Utilize RANK() for above assumption
 
 ```sql
 CREATE VIEW view_timespurchased AS
@@ -197,6 +226,35 @@ WHERE ranking = 1;
 | C | ramen | 3 |
 
 ![{D635A8F5-C855-42B1-87EF-F42D4A4033C2}](https://github.com/user-attachments/assets/c3fad67d-5920-444b-937d-9aff3352f0ad)
+
+#### Alternate result:
+- using CTE
+- Assumption: customer can have more than one popular item if they purchased the same number of each item
+- Utilize DENSE_RANK() for above assumption
+
+```sql
+WITH most_popular_cte AS (
+  SELECT
+    customer_id,
+    product_name,
+    COUNT(product_name) AS times_purchased,
+    DENSE_RANK() OVER(PARTITION BY customer_id ORDER BY COUNT(product_name) DESC) AS ranking
+  FROM sales
+  JOIN menu
+    ON menu.product_id = sales.product_id
+  GROUP BY customer_id, product_name
+)
+
+SELECT
+  customer_id,
+  product_name,
+  times_purchased
+FROM most_popular_cte
+WHERE ranking = 1;
+```
+
+![{A980C64B-B3EB-4EFD-A482-ABAD47E407EE}](https://github.com/user-attachments/assets/41467ab6-d7b7-4805-b9d9-428bc2047b95)
+
 
 ***
 
@@ -402,6 +460,8 @@ ORDER BY customer_id, order_date, price DESC;
 | C	| 2021-01-01	| ramen	| 12	| N |
 | C	| 2021-01-07	| ramen	| 12	| N |
 
+![{9ABB87AB-0D68-4B16-8A00-197E38B54780}](https://github.com/user-attachments/assets/829ce328-798d-4ed0-8cce-83bd7bd81520)
+
 ***
 
 #### Rank All The Things
@@ -454,5 +514,7 @@ FROM view_customerdata;
 | C	| 2021-01-01	| ramen	| 12	| N	| null |
 | C	| 2021-01-01	| ramen	| 12	| N	| null |
 | C	| 2021-01-07	| ramen	| 12	| N	| null |
+
+![{A4A9B2DC-E4F4-4FFA-85F8-E343787A1B43}](https://github.com/user-attachments/assets/72b5b614-e99d-4085-b954-59d2e78758e4)
 
 ***
