@@ -2,6 +2,8 @@
 
 Link to this case study can be found here: https://8weeksqlchallenge.com/case-study-1/
 
+UPDATE: as I continue my journey with SQL, upon reviewing solutions from others, I discovered common table expressions (CTE) which I did not learn in the online SQL course I took. For questions where I created a VIEW, I have provided an alternative solution using CTE which I find to be a lot more flexible for this particular exercise and potentially for the rest of the case studies going forward.
+
 ## Database
 
 I decided to work in MySQL instead of the embedded DB Fiddle so I created a database and loaded the tables as below.
@@ -292,6 +294,34 @@ WHERE row_numbr = 1;
 
 ![{327877DD-3189-4E5D-BA07-905AD3671B6F}](https://github.com/user-attachments/assets/74276118-b5a4-4b90-9746-ed80f1f44801)
 
+#### Alternate result:
+- using CTE
+
+```sql
+WITH member_first_item_cte AS (
+  SELECT
+    members.customer_id,
+    order_date,
+    product_name,
+    join_date,
+    ROW_NUMBER() OVER(PARTITION BY members.customer_id ORDER BY order_date) AS row_numbr
+  FROM sales
+  JOIN menu
+    ON menu.product_id = sales.product_id
+  JOIN members
+    ON members.customer_id = sales.customer_id
+  WHERE order_date > join_date
+)
+
+SELECT
+  customer_id,
+  product_name
+FROM member_first_item_cte
+WHERE row_numbr = 1;
+```
+
+![{87661F3F-D29A-449E-8421-E6365121A876}](https://github.com/user-attachments/assets/3e66b059-09b6-4cb3-ae73-86a141412269)
+
 ***
 
 #### 7. Which item was purchased just before the customer became a member?
@@ -327,6 +357,34 @@ WHERE row_numbr = 1;
 | B | sushi |
 
 ![{7B7533D3-5207-434F-A76F-2D53DB7D2767}](https://github.com/user-attachments/assets/f9432a7e-cbe4-492c-adc2-a9fa035f3b71)
+
+#### Alternate result:
+- using CTE
+
+```sql
+WITH purchase_before_member_cte AS (
+  SELECT
+    members.customer_id,
+    order_date,
+    product_name,
+    join_date,
+    ROW_NUMBER() OVER(PARTITION BY members.customer_id ORDER BY order_date DESC) as row_numbr
+  FROM sales
+  JOIN menu
+    ON menu.product_id = sales.product_id
+  JOIN members
+    ON members.customer_id = sales.customer_id
+  WHERE order_date < join_date
+)
+
+SELECT
+  customer_id,
+  product_name
+FROM purchase_before_member_cte
+WHERE row_numbr = 1;
+```
+
+![{57E6E81E-81EA-4AD4-BF30-7D13DEC75C53}](https://github.com/user-attachments/assets/368042e6-b698-454c-b4f9-8e69c4f7fb8d)
 
 ***
 
